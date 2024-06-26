@@ -18,17 +18,18 @@ interface Product {
 interface Props {
     heading: string;
     onSelectItem: (item: Product) => void;
-    listType: "full" | "part"
+    listType: "full" | "part";
+    loading: boolean
 }
 
 interface Dictionary {
     [key: string]: string;
 }
 
-function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
+function ProductsListGroup({ heading, onSelectItem, listType, loading }: Props) {
     const [productsData, setProductsData] = useState<Product[]>([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
-    const [isPending, startTransition] = useTransition()
+    const [_, startTransition] = useTransition()
     const [filter, setFilter] = useState("")
     const [error, setError] = useState("")
     const inputProductRef = useRef<HTMLInputElement>(null)
@@ -39,7 +40,7 @@ function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
     var atr: Dictionary = {}
     var w: number, h: number
     var containerID: string = ""
-    const f: Dictionary = { "name": "Наименование товара", "quantity": "Количество", "sizes": "Размеры", "price": "Цена" };
+    const f: Dictionary = { "quantity": "Количество", "sizes": "Размеры", "price": "Цена" };
     const p: Dictionary = { "name": "Наименование товара", "nmID": "Артикул WB" }
 
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +102,13 @@ function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
             {productsData.length === 0 && <p>Товары не найдены.</p>}
             <Container>
                 {isPart && <label htmlFor="productInput" className="form-label">Выберите товар для SEO-оптимизации</label>}
-                <input className='form-control' ref={inputProductRef} type="text" onChange={changeHandler} id='productInput' />
+                <input
+                    className='form-control'
+                    ref={inputProductRef}
+                    type="text"
+                    onChange={changeHandler}
+                    id='productInput' 
+                    disabled={loading}/>
                 <ul className="list-group" id={containerID}>
                     {!isPart && <>
                         <li className='list-group-item' key={0}>
@@ -109,6 +116,9 @@ function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
                                 <Row>
                                     <Col>
                                         <>Фото</>
+                                    </Col>
+                                    <Col>
+                                        <>Наименование товара</>
                                     </Col>
                                     {(Object.keys(atr) as productAccessors).map((atrib) =>
                                         <Col>
@@ -119,7 +129,7 @@ function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
                             </Container>
                         </li>
                     </>}
-                    {items.map((el, index) => 
+                    {items.map((el, index) =>
                         <li
                             key={el.nmID}
                             className={selectedIndex === index ? 'list-group-item active' : 'list-group-item'}
@@ -137,18 +147,20 @@ function ProductsListGroup({ heading, onSelectItem, listType }: Props) {
                                             width={w}
                                             height={h} />
                                     </Col>
+                                    {!isPart && <Col>
+                                        <a href={'http://localhost:5173/products/' + el.nmID.toString()} onClick={() => { onSelectItem(el) }}>{el.name}</a>
+                                    </Col>}
                                     {(Object.keys(atr) as productAccessors).map((atrib) =>
                                         <Col>
                                             <>{el[atrib]}</>
                                         </Col>
                                     )}
                                 </Row>
-                                {/* <a href='http://127.0.0.1:8000/products/{el.nmID}'>{el.name}</a> */}
                             </Container>
                         </li>
                     )}
                 </ul>
-            </Container>
+            </Container >
         </>
     );
 }

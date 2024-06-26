@@ -2,6 +2,8 @@
     margin-top: 2%;
 }
 
-body {
+#myBodyID {
     padding: 20px;
 }
+
+table.myFormat tr td { font-size: 40px; }

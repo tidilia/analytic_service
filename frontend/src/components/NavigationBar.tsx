@@ -8,11 +8,11 @@ function NavigationBar() {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">Сервис аналитики</Navbar.Brand>
+          <Navbar.Brand href="/">Сервис аналитики</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="">Товары</Nav.Link>
-            <Nav.Link href="#Seo">СЕО</Nav.Link>
-            <Nav.Link href="#pricing">Отчеты</Nav.Link>
+            <Nav.Link href="/products">Товары</Nav.Link>
+            <Nav.Link href="/seo">СЕО</Nav.Link>
+            <Nav.Link href="/reports">Отчеты</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

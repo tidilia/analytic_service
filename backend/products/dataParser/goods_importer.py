@@ -26,7 +26,10 @@ def update_database():
               }
             }'''
     response = requests.post(url, headers=headers, data=body)
-    result = response.json()['cards']
+    if (response.status_code != 200):
+        print(response.text)
+        return
+    result = (response.json())['cards']
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
 

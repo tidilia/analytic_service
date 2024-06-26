@@ -40,9 +40,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'django_extensions',
 
     'products',
     'seo',
+    'reports',
+    'productItemData'
 ]
 
 CORS_ALLOW_ALL_ORIGINS=True

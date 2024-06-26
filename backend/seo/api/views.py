@@ -9,9 +9,7 @@ from . import dataHandler
 
 class createSeo(APIView):
     def post(self, request, format=None):
-        print("test")
         id = request.data.get("nmID")
-        amount = request.data.get("amount")
         features = request.data.get("description")
-        t = dataHandler.makeDescription(id, amount, features)
+        t = dataHandler.makeDescription(id, features)
         return response.Response(t, status=HTTP_201_CREATED)
