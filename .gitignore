@@ -18,3 +18,5 @@ OLDPWD=/Users/dianahazgalieva/desktop
 GHC_DOT_APP=/Applications/ghc-7.10.3.app
 LANG=ru_RU.UTF-8
 _=/usr/bin/env
+
+backend/core/.env

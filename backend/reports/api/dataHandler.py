@@ -1,15 +1,19 @@
 import requests
 import datetime
 import sqlite3
-
+import environ
 
 def update_database():
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    db_path = env("DB_PATH")
+    api_key = env("WB_API")
+
     urls = {
         'statistics_get_report': 'https://statistics-api.wildberries.ru/api/v5/supplier/reportDetailByPeriod'}
 
     url = urls['statistics_get_report']
-    db_path = "/Users/dianahazgalieva/Desktop/analytic_service/backend/db.sqlite3"
-    api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyODk0NTU5MSwiaWQiOiI3YThjNWM2OS02ZmQyLTQyMDYtOTJmYy0wZDk3Zjc2ZTNmMTEiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjQ0LCJzaWQiOiI5YzVhYjQ5MS1jNjkzLTQ1M2QtYjIxMC1jZmM3MzgyOWIwMjEiLCJ0IjpmYWxzZSwidWlkIjo1OTE2NDAxOX0.-_B3tBks_1q1OaTLs6JKewzsX5KcumxQygYDEJoWNRlUiv8TLKXwlBGgXR86kB9gsv9koh8Y0OYsnWE8v3T0OA"
 
     headers = {
         "Authorization": api_key
@@ -18,11 +22,8 @@ def update_database():
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
 
-    # today = datetime.datetime.now().replace(microsecond=0).isoformat()
-    # last_week = (datetime.datetime.now().replace(microsecond=0) - datetime.timedelta(days=7)).isoformat()
-
-    today = '2024-04-28T00:00:00'
-    last_week = '2024-04-22T00:00:00'
+    today = datetime.datetime.now().replace(microsecond=0).isoformat()
+    last_week = (datetime.datetime.now().replace(microsecond=0) - datetime.timedelta(days=7)).isoformat()
 
     cursor.execute('SELECT * FROM reports_information')
     exact_date = cursor.fetchone()
@@ -105,8 +106,10 @@ def update_database():
     cursor.execute(
         'INSERT OR REPLACE INTO reports_storage (storaging, recount_storaging, acceptanse) VALUES (?,?,?)',
         (round(storage_fee, 2), round(recount_storaging, 2), 0))
-    average_price = round((delivery_amount_price / delivery_amount), 2)
-    average_price_r = round((return_amount_price / return_amount), 2)
+    if delivery_amount == 0: average_price = 0
+    else: average_price = round((delivery_amount_price / delivery_amount), 2)
+    if delivery_amount==0: average_price_r=0
+    else: average_price_r = round((return_amount_price / return_amount), 2)
     cursor.execute(
         'INSERT OR REPLACE INTO reports_logistics (number, amount, average_price) VALUES (?,?,?)',
         (delivery_amount, delivery_amount_price, average_price))

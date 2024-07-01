@@ -1,15 +1,18 @@
 import requests
 import sqlite3
-
+import environ
 
 def update_database():
     urls = {
         'content_get_cards_list': 'https://suppliers-api.wildberries.ru/content/v2/get/cards/list'
     }
-    db_path = "/Users/dianahazgalieva/Desktop/analytic_service/backend/db.sqlite3"
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    db_path = env("DB_PATH")
 
     url = urls['content_get_cards_list']
-    content_api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyOTA0MDMwMSwiaWQiOiJhYWFhZTcyZC01OTIyLTRkMjItOTdlMi1hYzZkOGQwYjZkYjMiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjEwNzM3NDE4MjYsInNpZCI6IjljNWFiNDkxLWM2OTMtNDUzZC1iMjEwLWNmYzczODI5YjAyMSIsInQiOmZhbHNlLCJ1aWQiOjU5MTY0MDE5fQ.PFP0UeHJ9fNXSO-IdR-JojPo-LCn0dYWlfTuZ01ofMspau0c4wvQSVno6lhRflO-c41IxiorU5s7z6d3EW-3Aw"
+    content_api_key = env("WB_API_content")
 
     headers = {
         "Authorization": content_api_key
@@ -69,4 +72,4 @@ def update_database():
     connection.close()
 
 
-update_database()
+

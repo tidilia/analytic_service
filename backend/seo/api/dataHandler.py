@@ -1,10 +1,7 @@
 import requests
 import openai
 from openai import OpenAI, OpenAIError
-
-# import { HttpsProxyAgent } from 'https-proxy-agent';
-
-# new OpenAI({httpAgent: new HttpsProxyAgent(proxyUrl)});
+import environ
 
 
 def getProductData(productID):
@@ -13,7 +10,10 @@ def getProductData(productID):
     }
 
     url = urls['content_get_cards_list']
-    content_api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyOTA0MDMwMSwiaWQiOiJhYWFhZTcyZC01OTIyLTRkMjItOTdlMi1hYzZkOGQwYjZkYjMiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjEwNzM3NDE4MjYsInNpZCI6IjljNWFiNDkxLWM2OTMtNDUzZC1iMjEwLWNmYzczODI5YjAyMSIsInQiOmZhbHNlLCJ1aWQiOjU5MTY0MDE5fQ.PFP0UeHJ9fNXSO-IdR-JojPo-LCn0dYWlfTuZ01ofMspau0c4wvQSVno6lhRflO-c41IxiorU5s7z6d3EW-3Aw"
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    content_api_key = env("WB_API_content")
 
     headers = {
         "Authorization": content_api_key
@@ -58,8 +58,14 @@ def makeDescription(productId, features):
     if features != "":
         request += '. Учитывай следующие особенности: ' + features
     print(request)
+    
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    bothub_api_key = env("bothub_api_key")
+
     client = openai.OpenAI(
-        api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU4N2Q3MTA4LTJlMWUtNDJjOS04YWYxLTBlYTE5NDA2YzdlNCIsImlzRGV2ZWxvcGVyIjp0cnVlLCJpYXQiOjE3MTc2NzYxNDEsImV4cCI6MjAzMzI1MjE0MX0.0OVdh8tVnish8vT51WgBOIeCZBXurJoyE3myP6dS2iY',
+        api_key=bothub_api_key,
         base_url='https://bothub.chat/api/v1/openai/v1'
     )
     try:

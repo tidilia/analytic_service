@@ -1,27 +1,28 @@
 import requests
 import datetime
 import sqlite3
-import json
+import environ
+
 
 
 def update_database():
     urls = {
         'statistics_get_orders': 'https://statistics-api.wildberries.ru/api/v1/supplier/orders'}
     url = urls['statistics_get_orders']
-    db_path = "/Users/dianahazgalieva/Desktop/analytic_service/backend/db.sqlite3"
-    api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyODk0NTU5MSwiaWQiOiI3YThjNWM2OS02ZmQyLTQyMDYtOTJmYy0wZDk3Zjc2ZTNmMTEiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjQ0LCJzaWQiOiI5YzVhYjQ5MS1jNjkzLTQ1M2QtYjIxMC1jZmM3MzgyOWIwMjEiLCJ0IjpmYWxzZSwidWlkIjo1OTE2NDAxOX0.-_B3tBks_1q1OaTLs6JKewzsX5KcumxQygYDEJoWNRlUiv8TLKXwlBGgXR86kB9gsv9koh8Y0OYsnWE8v3T0OA"
-
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    api_key = env("WB_API")
+    db_path = env.db_url
+    
     headers = {
         "Authorization": api_key
     }
 
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
-    today = datetime.datetime.strptime('2024-04-28', '%Y-%m-%d')
-    last_week = datetime.datetime.strptime(
-        '2024-04-22T00:00:00', '%Y-%m-%dT%H:%M:%S')
-    # today = datetime.datetime.now().replace(microsecond=0)
-    # last_week = (today.replace(microsecond=0) - datetime.timedelta(days=6))
+    today = datetime.datetime.now().replace(microsecond=0)
+    last_week = (today.replace(microsecond=0) - datetime.timedelta(days=6))
     cursor.execute('SELECT date FROM productItemData_productDayOrders LIMIT 1')
     info = cursor.fetchone()
     if info != None:
@@ -87,18 +88,16 @@ def get_real_price(nmID):
     print(nmID)
     urls = {
         'statistics_get_report': 'https://statistics-api.wildberries.ru/api/v5/supplier/reportDetailByPeriod'}
-
     url = urls['statistics_get_report']
-    api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyODk0NTU5MSwiaWQiOiI3YThjNWM2OS02ZmQyLTQyMDYtOTJmYy0wZDk3Zjc2ZTNmMTEiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjQ0LCJzaWQiOiI5YzVhYjQ5MS1jNjkzLTQ1M2QtYjIxMC1jZmM3MzgyOWIwMjEiLCJ0IjpmYWxzZSwidWlkIjo1OTE2NDAxOX0.-_B3tBks_1q1OaTLs6JKewzsX5KcumxQygYDEJoWNRlUiv8TLKXwlBGgXR86kB9gsv9koh8Y0OYsnWE8v3T0OA"
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    api_key = env("WB_API")
 
     headers = {
         "Authorization": api_key
     }
-    # today = datetime.datetime.now().replace(microsecond=0).isoformat()
-    # last_week = (datetime.datetime.now().replace(microsecond=0) - datetime.timedelta(days=7)).isoformat()
-
-    today = datetime.datetime.strptime(
-        '2024-04-28', '%Y-%m-%d').replace(microsecond=0)
+    today = datetime.datetime.now().replace(microsecond=0).isoformat()
     last_month = (today.replace(
         microsecond=0) - datetime.timedelta(days=30))
     t = datetime.datetime.strftime(today, '%Y-%m-%dT%H:%M:%S')
@@ -148,14 +147,13 @@ def get_real_price(nmID):
 
 def get_conversia(nmID):
     url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail'
-    api_key = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwMjI2djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTcyODk0NTU5MSwiaWQiOiI3YThjNWM2OS02ZmQyLTQyMDYtOTJmYy0wZDk3Zjc2ZTNmMTEiLCJpaWQiOjU5MTY0MDE5LCJvaWQiOjExNjI3NzcsInMiOjQ0LCJzaWQiOiI5YzVhYjQ5MS1jNjkzLTQ1M2QtYjIxMC1jZmM3MzgyOWIwMjEiLCJ0IjpmYWxzZSwidWlkIjo1OTE2NDAxOX0.-_B3tBks_1q1OaTLs6JKewzsX5KcumxQygYDEJoWNRlUiv8TLKXwlBGgXR86kB9gsv9koh8Y0OYsnWE8v3T0OA'
-    # today = datetime.datetime.now().replace(microsecond=0) - \
-    #     datetime.timedelta(hours=2)
-    # yesterday = (datetime.datetime.now().replace(
-    #     microsecond=0) - datetime.timedelta(days=30))
-    today = datetime.datetime.strptime(
-        '2024-04-28', '%Y-%m-%d').replace(microsecond=0)
-    yesterday = (today.replace(
+    env = environ.Env()
+    # reading .env file
+    environ.Env.read_env()
+    api_key = env("WB_API")
+    today = datetime.datetime.now().replace(microsecond=0) - \
+        datetime.timedelta(hours=2)
+    yesterday = (datetime.datetime.now().replace(
         microsecond=0) - datetime.timedelta(days=30))
     t = datetime.datetime.strftime(today, '%Y-%m-%d %H:%M:%S')
     y = datetime.datetime.strftime(yesterday, '%Y-%m-%d %H:%M:%S')
